@@ -15,7 +15,23 @@ export class JobQueue {
     this.jobs.set(job.id, job);
   }
 
+  remove(id: string) {
+    return this.jobs.delete(id);
+  }
+
+  find(id: string) {
+    return this.jobs.get(id) ?? null;
+  }
+
   list() {
     return Array.from(this.jobs.values());
+  }
+
+  clear() {
+    this.jobs.clear();
+  }
+
+  size() {
+    return this.jobs.size;
   }
 }

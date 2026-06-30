@@ -1,8 +1,8 @@
-import { Command, CommandRegistry } from "../core/registry.js";
+import { Command } from "../core/registry.js";
 
 const supportedTemplates = ["agent", "website", "saas", "bim"];
 
-export function createHelpCommand(registry: CommandRegistry): Command {
+export function createHelpCommand(getCommands: () => Command[]): Command {
   return {
     name: "help",
     aliases: ["h"],
@@ -12,7 +12,7 @@ export function createHelpCommand(registry: CommandRegistry): Command {
       console.log("Available commands:");
       console.log("");
 
-      for (const command of registry.list()) {
+      for (const command of getCommands()) {
         console.log(`  ${command.name.padEnd(12)} ${command.description}`);
       }
 

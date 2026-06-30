@@ -1,8 +1,9 @@
 import { CLICommand } from "./types.js";
-import * as path from "path";
-import { CommandRegistry } from "../core/registry.js";
+import { Command, CommandRegistry } from "../core/registry.js";
 import { CommandParser } from "./parser.js";
 import { Logger } from "../core/logger.js";
+
+export type RunnerCommand = CLICommand | Command;
 
 export class CLIRunner {
   private registry = new CommandRegistry();
@@ -10,13 +11,22 @@ export class CLIRunner {
 
   constructor() {}
 
-  register(command: CLICommand) {
-    this.registry.register({
-      name: command.name,
-      aliases: [],
-      description: command.description,
-      run: (args: string[]) => command.execute(args)
-    });
+  register(command: RunnerCommand) {
+    if ("execute" in command) {
+      this.registry.register({
+        name: command.name,
+        aliases: [],
+        description: command.description,
+        run: (args: string[]) => command.execute(args)
+      });
+      return;
+    }
+
+    this.registry.register(command);
+  }
+
+  listCommands() {
+    return this.registry.list();
   }
 
   async run(argv: string[]) {

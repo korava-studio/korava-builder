@@ -13,7 +13,7 @@ export function createCLI() {
   const pluginRoot = path.resolve(process.cwd(), "plugins");
   // register built-in commands
   runner.register(versionCommand as any);
-  runner.register(createHelpCommand as any);
+  runner.register(createHelpCommand(() => runner.listCommands()) as any);
   runner.register(doctorCommand as any);
   runner.register(repairCommand as any);
   runner.register(newCommand as any);
