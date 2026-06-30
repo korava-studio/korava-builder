@@ -1,9 +1,15 @@
-import { Logger } from "../../core/logger.js";
+import { EventBus } from "../events/event-bus.js";
+import { SecurityEngine } from "../../security/engine/security-engine.js";
 
 export class SecurityManager {
-  checkPermissions(_subject: string, _action: string) {
-    // placeholder: enforced by governance policies
-    Logger.info("SecurityManager: permission check (mock)");
-    return true;
+  public engine: SecurityEngine;
+
+  constructor(private bus: EventBus) {
+    this.engine = new SecurityEngine(this.bus);
+  }
+
+  checkPermissions(subject: string, action: string) {
+    const result = this.engine.authorization.authorize(subject, action, "kernel");
+    return result.granted;
   }
 }

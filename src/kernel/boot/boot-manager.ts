@@ -21,7 +21,7 @@ export class BootManager {
     const state = new StateManager();
     const config = new ConfigManager("config");
     const governance = new GovernanceManager();
-    const security = new SecurityManager();
+    const security = new SecurityManager(eventBus);
 
     this.container.register("eventBus", eventBus);
     this.container.register("state", state);
