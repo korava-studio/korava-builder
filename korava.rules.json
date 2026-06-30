@@ -1,0 +1,9 @@
+{
+  "maximum_file_lines": 150,
+  "maximum_function_lines": 40,
+  "architecture": "layered",
+  "typescript": "strict",
+  "allow_duplicate_code": false,
+  "plugin_architecture": true,
+  "documentation_required": true
+}
