@@ -5,6 +5,7 @@ import { versionCommand } from "../commands/version.js";
 import { doctorCommand } from "../commands/doctor.js";
 import { repairCommand } from "../commands/repair.js";
 import { newCommand } from "../commands/new.js";
+import { pluginCommand } from "../commands/plugin.js";
 import * as path from "path";
 
 export function createCLI() {
@@ -16,6 +17,7 @@ export function createCLI() {
   runner.register(doctorCommand as any);
   runner.register(repairCommand as any);
   runner.register(newCommand as any);
+  runner.register(pluginCommand as any);
 
   // register plugins command
   // plugin manager will be wired separately as before
