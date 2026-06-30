@@ -7,10 +7,6 @@ KORAVA Builder uses a layered architecture with a core runtime, plugin loader, c
 
 ## Development Workflow
 
-- Run `npm run build` to compile the project.
-- Use `npm run dev -- <command>` during development.
-- Keep code small, strictly typed, and well-documented.
-- Update docs when adding features.
 
 ## Sprint Workflow
 
@@ -19,3 +15,27 @@ KORAVA Builder uses a layered architecture with a core runtime, plugin loader, c
 3. Validate with a build before commit.
 4. Document architecture and behavior.
 5. Mark the sprint complete only after successful build.
+
+## Kernel
+
+The KORAVA Kernel is the operating core that boots the system, loads configuration, services, modules, plugins and the AI runtime. Use the `Kernel` class in `src/kernel/kernel.ts` to start the system programmatically.
+
+## SDK
+
+The internal SDKs are located under `src/sdk/` and provide injectable, single-responsibility services used across the codebase: filesystem, templates, workflow, plugins, configuration and validation.
+
+## Quick Start
+
+Build the project:
+
+```bash
+npm run build
+```
+
+Run the CLI (development mode):
+
+```bash
+npm run dev -- plugins
+```
+
+For module authors: add a `modules/<name>/module.json` and register modules via the Kernel's service container.
