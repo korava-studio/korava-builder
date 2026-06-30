@@ -1,0 +1,5 @@
+{
+  "name": "agent",
+  "description": "Agent project template",
+  "variables": ["PROJECT_NAME", "AUTHOR", "DATE", "VERSION", "DESCRIPTION"]
+}

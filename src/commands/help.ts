@@ -1,5 +1,7 @@
 import { Command, CommandRegistry } from "../core/registry.js";
 
+const supportedTemplates = ["agent", "website", "saas", "bim"];
+
 export function createHelpCommand(registry: CommandRegistry): Command {
   return {
     name: "help",
@@ -14,6 +16,9 @@ export function createHelpCommand(registry: CommandRegistry): Command {
         console.log(`  ${command.name.padEnd(12)} ${command.description}`);
       }
 
+      console.log("");
+      console.log("Available templates:");
+      console.log(`  ${supportedTemplates.join(", ")}`);
       console.log("");
       console.log("Usage examples:");
       console.log("  korava-builder help");
