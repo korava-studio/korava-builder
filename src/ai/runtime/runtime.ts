@@ -4,6 +4,9 @@ import { PromptCompiler } from "./prompt-compiler.js";
 import { TaskPlanner } from "./task-planner.js";
 import { MemoryManager } from "../memory/memory-manager.js";
 import { AIProvider } from "../providers/provider.js";
+import { TaskQueue } from "../tasks/task-queue.js";
+import { RuntimeEvents } from "../events/runtime-events.js";
+import { EventBus } from "../../kernel/events/event-bus.js";
 
 export class AIRuntime {
   public providerManager = new ProviderManager();
@@ -11,28 +14,52 @@ export class AIRuntime {
   public promptCompiler = new PromptCompiler(this.contextManager);
   public taskPlanner = new TaskPlanner();
   public memoryManager = new MemoryManager();
+  public taskQueue = new TaskQueue();
+
+  constructor(private eventBus: EventBus) {}
 
   registerProvider(provider: AIProvider) {
     this.providerManager.register(provider);
   }
 
-  async runTask(goal: string, providerName: string) {
-    const plan = this.taskPlanner.plan(goal);
-    this.contextManager.setTask(goal);
-    this.memoryManager.capture(goal);
-    const provider = this.providerManager.get(providerName);
-
-    if (!provider) {
-      throw new Error(`Provider ${providerName} not registered`);
-    }
-
-    const prompt = this.promptCompiler.compile(
+  async createTask(goal: string, providerName: string, userPrompt: string) {
+    const memoryContext = this.memoryManager.getSnapshot()?.conversation ?? "";
+    const compiledPrompt = this.promptCompiler.compile(
       "You are the KORAVA AI runtime.",
       "Follow the project workflow.",
-      goal
+      userPrompt,
+      memoryContext
     );
+    const plan = this.taskPlanner.plan(goal, compiledPrompt);
+    const task = this.taskQueue.enqueue({
+      goal,
+      prompt: plan.description,
+      provider: providerName
+    });
+    await this.eventBus.emit(RuntimeEvents.TASK_CREATED, task);
+    return task;
+  }
+
+  async executeTask(taskId: string) {
+    const task = this.taskQueue.start(taskId);
+    if (!task) throw new Error(`Task ${taskId} not found or not pending`);
+    const provider = this.providerManager.get(task.provider);
+    if (!provider) throw new Error(`Provider ${task.provider} not registered`);
 
     await provider.connect();
-    return provider.chat(prompt);
+    try {
+      const response = await provider.chat(task.description);
+      const completed = this.taskQueue.complete(taskId, response.text);
+      this.memoryManager.captureConversation(response.text);
+      await this.eventBus.emit(RuntimeEvents.TASK_COMPLETED, completed);
+      await provider.disconnect();
+      await this.eventBus.emit(RuntimeEvents.MEMORY_UPDATED, this.memoryManager.getSnapshot());
+      return completed;
+    } catch (err) {
+      const failed = this.taskQueue.fail(taskId, (err as Error).message);
+      await this.eventBus.emit(RuntimeEvents.TASK_COMPLETED, failed);
+      await provider.disconnect();
+      throw err;
+    }
   }
 }

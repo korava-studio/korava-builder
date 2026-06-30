@@ -1,9 +1,14 @@
 import { AIProvider, ChatResult, StreamResult, EmbedResult, HealthStatus, ProviderOptions } from "./provider.js";
 
 export class OpenAIProvider implements AIProvider {
+  id = "openai";
   name = "OpenAI";
 
   async connect() {
+    return;
+  }
+
+  async disconnect() {
     return;
   }
 

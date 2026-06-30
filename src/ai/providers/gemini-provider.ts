@@ -1,9 +1,14 @@
 import { AIProvider, ChatResult, StreamResult, EmbedResult, HealthStatus } from "./provider.js";
 
 export class GeminiProvider implements AIProvider {
+  id = "gemini";
   name = "Gemini";
 
   async connect() {
+    return;
+  }
+
+  async disconnect() {
     return;
   }
 

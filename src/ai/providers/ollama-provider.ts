@@ -1,9 +1,14 @@
 import { AIProvider, ChatResult, StreamResult, EmbedResult, HealthStatus } from "./provider.js";
 
 export class OllamaProvider implements AIProvider {
+  id = "ollama";
   name = "Ollama";
 
   async connect() {
+    return;
+  }
+
+  async disconnect() {
     return;
   }
 

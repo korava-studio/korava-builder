@@ -1,9 +1,14 @@
 import { AIProvider, ChatResult, StreamResult, EmbedResult, HealthStatus } from "./provider.js";
 
 export class DeepSeekProvider implements AIProvider {
+  id = "deepseek";
   name = "DeepSeek";
 
   async connect() {
+    return;
+  }
+
+  async disconnect() {
     return;
   }
 

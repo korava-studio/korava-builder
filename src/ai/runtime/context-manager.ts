@@ -46,7 +46,7 @@ export class ContextManager {
     this.window.task = value;
   }
 
-  getWindow() {
+  getContext() {
     return { ...this.window };
   }
 }

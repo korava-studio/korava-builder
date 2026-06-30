@@ -1,33 +1,15 @@
-export interface TaskPlan {
-  title: string;
-  description: string;
-  priority: number;
-  estimateMinutes: number;
-}
+import { TaskPlan } from "../models/task.js";
 
 export class TaskPlanner {
-  plan(goal: string) {
-    const tasks: TaskPlan[] = [
-      {
-        title: "Analyze goal",
-        description: `Review the goal and identify subtasks for: ${goal}`,
-        priority: 1,
-        estimateMinutes: 5
-      },
-      {
-        title: "Create plan",
-        description: `Split the workflow into executable tasks for: ${goal}`,
-        priority: 2,
-        estimateMinutes: 10
-      },
-      {
-        title: "Validate plan",
-        description: `Prioritize and estimate the task plan for: ${goal}`,
-        priority: 3,
-        estimateMinutes: 5
-      }
-    ];
-
-    return tasks.sort((a, b) => a.priority - b.priority);
+  plan(goal: string, prompt: string) {
+    const title = `Plan for: ${goal}`;
+    const description = `${prompt}\n\nBreak down the goal into execution steps.`;
+    const estimateMinutes = Math.max(1, Math.ceil(prompt.length / 50));
+    return {
+      title,
+      description,
+      priority: 1,
+      estimateMinutes
+    } as TaskPlan;
   }
 }

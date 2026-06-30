@@ -1,9 +1,14 @@
 import { AIProvider, ChatResult, StreamResult, EmbedResult, HealthStatus } from "./provider.js";
 
 export class QwenProvider implements AIProvider {
+  id = "qwen";
   name = "Qwen";
 
   async connect() {
+    return;
+  }
+
+  async disconnect() {
     return;
   }
 

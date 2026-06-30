@@ -20,10 +20,12 @@ export interface HealthStatus {
 }
 
 export interface AIProvider {
+  id: string;
   name: string;
   connect(): Promise<void>;
+  disconnect(): Promise<void>;
+  health(): Promise<HealthStatus>;
   chat(prompt: string, options?: ProviderOptions): Promise<ChatResult>;
   stream(prompt: string, options?: ProviderOptions): Promise<StreamResult>;
   embed(inputs: string[], options?: ProviderOptions): Promise<EmbedResult>;
-  health(): Promise<HealthStatus>;
 }

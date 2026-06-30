@@ -1,9 +1,14 @@
 import { AIProvider, ChatResult, StreamResult, EmbedResult, HealthStatus } from "./provider.js";
 
 export class MockProvider implements AIProvider {
+  id = "mock";
   name = "Mock";
 
   async connect() {
+    return;
+  }
+
+  async disconnect() {
     return;
   }
 

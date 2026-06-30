@@ -42,7 +42,7 @@ export class BootManager {
     this.container.register("plugins", pluginManager);
 
     // AI runtime
-    const ai = new AIRuntime();
+    const ai = new AIRuntime(eventBus);
     this.container.register("airuntime", ai);
 
     const elapsed = Date.now() - started;

@@ -3,8 +3,8 @@ import { ContextManager } from "./context-manager.js";
 export class PromptCompiler {
   constructor(private context: ContextManager) {}
 
-  compile(systemPrompt: string, developerPrompt: string, userPrompt: string) {
-    const context = this.context.getWindow();
+  compile(systemPrompt: string, developerPrompt: string, userPrompt: string, memoryContext: string) {
+    const context = this.context.getContext();
     return [
       `SYSTEM: ${systemPrompt}`,
       `DEVELOPER: ${developerPrompt}`,
@@ -12,6 +12,7 @@ export class PromptCompiler {
       `PROJECT: ${context.project}`,
       `USER: ${context.user}`,
       `TASK: ${context.task}`,
+      `MEMORY: ${memoryContext}`,
       `INPUT: ${userPrompt}`
     ].join("\n\n");
   }
