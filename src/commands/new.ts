@@ -1,5 +1,5 @@
-import { Command } from "../core/registry";
-import { createFolder, createFile } from "../core/filesystem";
+import { Command } from "../core/registry.js";
+import { createFolder, createFile } from "../core/filesystem.js";
 import * as path from "path";
 
 export const newCommand: Command = {

@@ -1,4 +1,4 @@
-import { Command } from "../core/registry";
+import { Command } from "../core/registry.js";
 
 export const versionCommand: Command = {
   name: "version",
