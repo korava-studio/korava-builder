@@ -1,8 +1,17 @@
-console.log("==================================");
-console.log("        KORAVA Builder");
-console.log("==================================");
-console.log("");
-console.log("Welcome to the KORAVA ecosystem.");
-console.log("Version: 0.1.0");
-console.log("");
-console.log("Status: Ready");
+import { CommandRegistry } from "./core/registry";
+import { versionCommand } from "./commands/version";
+
+const registry = new CommandRegistry();
+
+registry.register(versionCommand);
+
+const args = process.argv.slice(2);
+
+const command = args[0];
+
+if (!command) {
+    console.log("No command provided.");
+    process.exit(0);
+}
+
+registry.execute(command, args.slice(1));
