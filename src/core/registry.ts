@@ -1,28 +1,41 @@
 export interface Command {
   name: string;
   description: string;
-  run(args: string[]): void;
+  aliases: string[];
+  run(args: string[]): Promise<number> | number;
 }
 
 export class CommandRegistry {
-  private commands = new Map<string, Command>();
+  private commandList: Command[] = [];
+  private commandMap = new Map<string, Command>();
 
   register(command: Command) {
-    this.commands.set(command.name, command);
+    this.commandList.push(command);
+    this.commandMap.set(command.name, command);
+
+    for (const alias of command.aliases) {
+      this.commandMap.set(alias, command);
+    }
   }
 
-  execute(name: string, args: string[]) {
-    const command = this.commands.get(name);
+  async execute(name: string, args: string[]) {
+    const command = this.commandMap.get(name);
 
     if (!command) {
-      console.log(`Unknown command: ${name}`);
-      return;
+      console.error(`Unknown command: ${name}`);
+      return 1;
     }
 
-    command.run(args);
+    try {
+      const result = await command.run(args);
+      return typeof result === 'number' ? result : 0;
+    } catch (error) {
+      console.error('Command failed:', error);
+      return 1;
+    }
   }
 
   list() {
-    return [...this.commands.values()];
+    return [...this.commandList];
   }
 }

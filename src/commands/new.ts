@@ -1,46 +1,77 @@
 import { Command } from "../core/registry.js";
-import { createFolder, createFile } from "../core/filesystem.js";
+import * as fs from "fs";
 import * as path from "path";
+import { createFolder, createFile } from "../core/filesystem.js";
 
-export const newCommand: Command = {
+const supportedTemplates = ["agent", "website", "saas", "bim"];
 
-    name: "new",
+function replacePlaceholders(text: string, replacements: Record<string, string>) {
+  return Object.entries(replacements).reduce(
+    (value, [key, replacement]) => value.replaceAll(`{{${key}}}`, replacement),
+    text
+  );
+}
 
-    description: "Create new KORAVA project",
+function copyTemplate(source: string, destination: string, replacements: Record<string, string>) {
+  const entries = fs.readdirSync(source, { withFileTypes: true });
 
-    run(args: string[]) {
+  for (const entry of entries) {
+    const sourcePath = path.join(source, entry.name);
+    const targetName = replacePlaceholders(entry.name, replacements);
+    const targetPath = path.join(destination, targetName);
 
-        const projectName = args[0];
-
-        if (!projectName) {
-
-            console.log("Please enter project name.");
-
-            return;
-
-        }
-
-        const root = path.join(process.cwd(), projectName);
-
-        createFolder(root);
-
-        createFolder(path.join(root, "src"));
-
-        createFolder(path.join(root, "docs"));
-
-        createFile(
-            path.join(root, "README.md"),
-            `# ${projectName}\n\nCreated with KORAVA Builder`
-        );
-
-        console.log("");
-
-        console.log("Project created successfully.");
-
-        console.log(root);
-
-        console.log("");
-
+    if (entry.isDirectory()) {
+      createFolder(targetPath);
+      copyTemplate(sourcePath, targetPath, replacements);
+      continue;
     }
 
+    const content = fs.readFileSync(sourcePath, "utf8");
+    const transformed = replacePlaceholders(content, replacements);
+    createFolder(path.dirname(targetPath));
+    createFile(targetPath, transformed);
+  }
+}
+
+export const newCommand: Command = {
+  name: "new",
+  aliases: ["create"],
+  description: "Create a new project from a KORAVA template",
+  run(args: string[]) {
+    const templateType = args[0];
+    const projectName = args[1];
+
+    if (!templateType || !projectName) {
+      console.log("Usage: new <template> <project-name>");
+      console.log("Supported templates:", supportedTemplates.join(", "));
+      return 1;
+    }
+
+    if (!supportedTemplates.includes(templateType)) {
+      console.log(`Unknown template type: ${templateType}`);
+      console.log("Supported templates:", supportedTemplates.join(", "));
+      return 1;
+    }
+
+    const templatePath = path.resolve(process.cwd(), "templates", templateType);
+    if (!fs.existsSync(templatePath) || !fs.statSync(templatePath).isDirectory()) {
+      console.log(`Template not found: ${templateType}`);
+      return 1;
+    }
+
+    const targetRoot = path.resolve(process.cwd(), projectName);
+    if (fs.existsSync(targetRoot)) {
+      console.log(`Destination already exists: ${targetRoot}`);
+      return 1;
+    }
+
+    createFolder(targetRoot);
+    copyTemplate(templatePath, targetRoot, {
+      projectName,
+      templateType
+    });
+
+    console.log(`Created project ${projectName} from template ${templateType}`);
+    return 0;
+  }
 };
