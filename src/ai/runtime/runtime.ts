@@ -3,6 +3,7 @@ import { ContextManager } from "./context-manager.js";
 import { PromptCompiler } from "./prompt-compiler.js";
 import { TaskPlanner } from "./task-planner.js";
 import { MemoryManager } from "../memory/memory-manager.js";
+import { MemoryEngine } from "../../memory/core/memory-engine.js";
 import { AIProvider } from "../providers/provider.js";
 import { TaskQueue } from "../tasks/task-queue.js";
 import { RuntimeEvents } from "../events/runtime-events.js";
@@ -14,6 +15,7 @@ export class AIRuntime {
   public promptCompiler = new PromptCompiler(this.contextManager);
   public taskPlanner = new TaskPlanner();
   public memoryManager = new MemoryManager();
+  public memoryEngine = new MemoryEngine();
   public taskQueue = new TaskQueue();
 
   constructor(private eventBus: EventBus) {}
