@@ -1,0 +1,5 @@
+{
+  "name": "saas",
+  "description": "SaaS project template",
+  "variables": ["PROJECT_NAME", "AUTHOR", "DATE", "VERSION", "DESCRIPTION"]
+}

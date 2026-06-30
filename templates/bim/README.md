@@ -1,4 +1,6 @@
-﻿# {{projectName}}
+﻿# {{PROJECT_NAME}}
 
-A KORAVA bim project created from the {{templateType}} template.
+{{DESCRIPTION}}
+
+Created by {{AUTHOR}} on {{DATE}}.
 

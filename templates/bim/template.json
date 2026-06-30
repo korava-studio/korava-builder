@@ -1,0 +1,5 @@
+{
+  "name": "bim",
+  "description": "BIM project template",
+  "variables": ["PROJECT_NAME", "AUTHOR", "DATE", "VERSION", "DESCRIPTION"]
+}

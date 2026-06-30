@@ -1,2 +1,2 @@
-﻿console.log('Project {{projectName}} of type {{templateType}} created.');
+﻿console.log('Project {{PROJECT_NAME}} created from the saas template.');
 
